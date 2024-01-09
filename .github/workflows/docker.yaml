@@ -10,13 +10,11 @@ jobs:
       #   username:
       #   password:
       env:
-        API_URL: some-url.com
+        ENV: Production
       ports:
         - 80
-      # volumes:
-      #   - vol_name:/path/in/container
-      #   - /path/to/container
-      #   - /path/in/host:/path/in/container
+      volumes:
+        - my_vol:/volume_mount
       # options: --cpus 1
     steps:
       - name: Log Node & OS Versions
@@ -24,33 +22,5 @@ jobs:
           node -v
           cat /etc/os-release
       - name: Log Env
-        run: echo $API_URL
-      - name: Create a file
-        run: echo 'Some text' > text.txt
-      - name: Container in a Step
-        uses: docker://node:18.16-alpine3.17
-        with:
-          entrypoint: /usr/local/bin/node
-          args: -p 2+3
-      - name: Log node version
-        uses: docker://node:18.16-alpine3.17
-        with:
-          args: -v
-      - name: Show file contents
-        uses: docker://node:18.16-alpine3.17
-        with:
-          entrypoint: cat
-          args: text.txt
-      - uses: actions/checkout@v3
-      - name: Run a bash script
-        uses: docker://node:18.16-alpine3.17
-        with:
-          entrypoint: ./script.sh
-          args: "Some string"
-      - name: Send a slack message
-        uses: docker://technosophos/slack-notify
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_TITLE: From Github Actions
-          SLACK_MESSAGE: "Actor: ${{github.actor}}, Event: ${{github.event_name}}"
-          SLACK_COLOR: "#723fc4"
+        run: echo $ENV
+      
