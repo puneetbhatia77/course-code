@@ -1,4 +1,4 @@
-name: Docker Test
+name: Deploy App
 
 on:
   push:
@@ -6,15 +6,24 @@ on:
       - main
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build Docker image
-        run: docker build -t my-app .
+      - name: Pull Docker image
+        run: docker pull my-docker-image:latest
 
-      - name: Run tests
-        run: docker run -v ${{ github.workspace }}/test-results:/app/test-results --network host my-app npm test
+      - name: Create volume
+        run: docker volume create my-volume
+
+      - name: Create network
+        run: docker network create my-network
+
+      - name: Deploy
+        run: docker run -d --name my-app-container -v my-volume:/app/data --network my-network my-docker-image:latest
+
+      - name: Run Tests
+        run: docker run --rm --network my-network my-docker-image:latest npm test
