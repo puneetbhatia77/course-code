@@ -23,7 +23,7 @@ jobs:
         run: docker network create my-network
 
       - name: Deploy
-        run: docker run -d --name my-app-container -v my-volume:/app/data --network my-network my-docker-image:latest
+        run: docker run -d --name my-app-container -v my-volume:/app/data --network my-network hello-world:latest
 
       - name: Run Tests
         run: docker run --rm --network my-network my-docker-image:latest npm test
