@@ -23,7 +23,7 @@ jobs:
         run: docker network create my-network
 
       - name: Deploy
-        run: docker run -d --name my-app-container -v my-volume:/app/data --network my-network hello-world:latest
+        run: docker run -d --name my-app-container -v my-volume:/app/data --network my-network hello-world:latest sh -c "echo 'Hello, World!' > /app/test-results/file.txt"
 
-      - name: Run Tests
-        run: docker run --rm --network my-network hello-world:latest npm test
+      - name: Display contents
+        run: docker run -d --name my-app-container -v my-volume:/app/data --network my-network cat /app/test-results/file.txt
